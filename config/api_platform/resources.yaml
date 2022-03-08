@@ -1,3 +1,5 @@
 ressources :
  App\Entity\allergens
+ App\Entity\Recipes
+
  

@@ -7,21 +7,32 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Extension\QueryItemExtensionInterface;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Util\QueryNameGeneratorInterface;
 use App\Entity\Recipe;
 use Doctrine\ORM\QueryBuilder;
+use Symfony\Component\Security\Core\Security;
 
 class FilterPublishedCommentQueryExtension implements QueryCollectionExtensionInterface, QueryItemExtensionInterface
 {
-    public function applyToCollection(  QueryBuilder $qb, 
+    private $security;
+
+    public function __construct(Security $security)
+    {
+        $this->security = $security;
+    }
+
+
+    public function applyToCollection(  QueryBuilder $queryBuilder, 
                                         QueryNameGeneratorInterface $queryNameGenerator, 
                                         string $resourceClass, 
                                         string $operationName = null)
     {
-        if (Recipe::class === $resourceClass) {
-            $alias = $qb->getRootAliases()[0];
-            $qb->andWhere(sprintf('%s.isPublished = :isPublished', $alias))
+        dd('on passe par collection'+ $this->security->getUser());
+        
+        if ($resourceClass === Recipe::class ) {
+            $rootAlias  = $queryBuilder->getRootAliases()[0];
+            $queryBuilder->andWhere(sprintf('%s.isPublished = :isPublished', $rootAlias ))
             ->setParameter('isPublished', true);
         }
 
-        dd('on passe par collection');
+        
     }
 
     public function applyToItem(QueryBuilder $qb, 
@@ -33,12 +44,6 @@ class FilterPublishedCommentQueryExtension implements QueryCollectionExtensionIn
     {
         
                 dd($queryNameGenerator);                
-        if (Recipe::class === $resourceClass) {
-            $alias = $qb->getRootAliases()[0];
-            $qb
-            ->andWhere('$alias.isPublished = true');
-            
-        }
 
 
     }

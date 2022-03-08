@@ -14,7 +14,6 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 #[ORM\Entity(repositoryClass: RecipeRepository::class)]
 #[ApiResource(
     normalizationContext: ['groups' => ['recipe:read']],
-    collectionOperations:['groups' => ['recipe:read']],
     itemOperations: [
         'patch' => [
             'denormalization_context' => ['groups' => ['recipe:update']]
