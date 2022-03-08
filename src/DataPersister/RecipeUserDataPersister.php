@@ -3,7 +3,7 @@
 
 namespace App\DataPersister;
 
-use App\Entity\User;
+use App\Entity\Recipe;
 use App\Entity\Category;
 use App\Entity\Allergen;
 use Doctrine\ORM\EntityManagerInterface;
@@ -32,25 +32,14 @@ class UserDataPersister implements ContextAwareDataPersisterInterface
      */
     public function supports($data, array $context = []): bool
     {
-        return $data instanceof User;
+        return $data instanceof Recipe;
     }
 
     /**
-     * @param User $data
+     * @param Recipe $data
      */
     public function persist($data, array $context = [])
     {
-        // password management
-        if ($data->getPlainPassword()) {
-            $data->setPassword(
-                $this->_passwordEncoder->hashPassword(
-                    $data,
-                    $data->getPlainPassword()
-                )
-            );
-
-            $data->eraseCredentials();
-        }
 
         //categories management
         $categoryRepository = $this->_entityManager->getRepository(Category::class);

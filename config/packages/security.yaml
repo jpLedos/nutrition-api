@@ -27,7 +27,7 @@ security:
                 password_path: password
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
-            custom_authenticator: App\Security\LoginBackAuthenticator
+
             logout:
                 path: app_logout
                 # where to redirect after logout
@@ -41,6 +41,11 @@ security:
         main:
             lazy: true
             provider: app_user_provider
+            custom_authenticator: App\Security\FormAuthenticator
+            logout:
+                path: app_logout
+                # where to redirect after logout
+                # target: app_any_route
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
@@ -54,6 +59,8 @@ security:
 
         - { path: ^/api/docs, roles: PUBLIC_ACCESS } # Allows accessing API documentations and Swagger UI
         - { path: ^/api/allergens, roles: PUBLIC_ACCESS } 
+        - { path: ^/api/categories, roles: PUBLIC_ACCESS } 
+        - { path: ^/api/recipes, roles: PUBLIC_ACCESS } 
         - { path: ^/api/emails, roles: PUBLIC_ACCESS, method: POST} 
         - { path: ^/api/login_check, roles: PUBLIC_ACCESS }
         - { path: ^/api,       roles: IS_AUTHENTICATED_FULLY }

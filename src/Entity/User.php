@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
@@ -16,7 +18,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiResource(
     normalizationContext: ['groups' => ['user:read']],
     itemOperations: [
-        'put',
+        'patch' => [
+            'denormalization_context' => ['groups' => ['user:update']]
+        ],
         'delete',
         'get' => [
             'normalization_context' => ['groups' => ['user:read']]
@@ -32,7 +36,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(["user:read"])]
     private $id;
 
-    #[Groups(["user:read", "user:write"])]
+    #[Groups(["user:read", "user:write",'user:update'])]
     #[Assert\Length(min : 5)]
     #[ORM\Column(type: 'string', length: 180, unique: true)]
     private $email;
@@ -44,13 +48,27 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string')]
     private $password;
 
-    #[Groups(["user:read", "user:write"])]
+    #[Groups(["user:read", "user:write",'user:update'])]
     #[ORM\Column(type: 'string', length: 100)]
     private $userName;
 
     #[SerializedName("password")]
-    #[Groups(["user:read", "user:write"])]
+    #[Groups(["user:write",'user:update'])]
     private $plainPassword;
+
+    #[ORM\ManyToMany(targetEntity: Category::class, inversedBy: 'users', cascade: ['persist'])]
+    #[Groups(["user:read", "user:write",'user:update'])]
+    private $categories;
+
+    #[ORM\ManyToMany(targetEntity: Allergen::class, inversedBy: 'users', cascade: ['persist'])]
+    #[Groups(["user:read", "user:write",'user:update'])]
+    private $allergens;
+
+    public function __construct()
+    {
+        $this->categories = new ArrayCollection();
+        $this->allergens = new ArrayCollection();
+    }
 
 
     public function getId(): ?int
@@ -135,7 +153,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getPlainPassword(): string
+    public function getPlainPassword(): string|null
     {
         return $this->plainPassword;
     }
@@ -143,6 +161,54 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPlainPassword(string $plainPassword): self
     {
         $this->plainPassword = $plainPassword;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Category>
+     */
+    public function getCategories(): Collection
+    {
+        return $this->categories;
+    }
+
+    public function addCategory(Category $category): self
+    {
+        if (!$this->categories->contains($category)) {
+            $this->categories[] = $category;
+        }
+
+        return $this;
+    }
+
+    public function removeCategory(Category $category): self
+    {
+        $this->categories->removeElement($category);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Allergen>
+     */
+    public function getAllergens(): Collection
+    {
+        return $this->allergens;
+    }
+
+    public function addAllergen(Allergen $allergen): self
+    {
+        if (!$this->allergens->contains($allergen)) {
+            $this->allergens[] = $allergen;
+        }
+
+        return $this;
+    }
+
+    public function removeAllergen(Allergen $allergen): self
+    {
+        $this->allergens->removeElement($allergen);
 
         return $this;
     }
