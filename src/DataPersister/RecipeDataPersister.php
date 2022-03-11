@@ -8,23 +8,21 @@ use App\Entity\Category;
 use App\Entity\Allergen;
 use Doctrine\ORM\EntityManagerInterface;
 use ApiPlatform\Core\DataPersister\ContextAwareDataPersisterInterface;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 
 /**
  *
  */
-class UserDataPersister implements ContextAwareDataPersisterInterface
+class RecipeDataPersister implements ContextAwareDataPersisterInterface
 {
     private $_entityManager;
-    private $_passwordEncoder;
+
 
     public function __construct(
         EntityManagerInterface $entityManager,
-        UserPasswordHasherInterface $passwordEncoder
+ 
     ) {
         $this->_entityManager = $entityManager;
-        $this->_passwordEncoder = $passwordEncoder;
     }
 
     /**
@@ -71,7 +69,6 @@ class UserDataPersister implements ContextAwareDataPersisterInterface
                     $this->_entityManager->persist($allergen);
                 }
             }
-
 
         $this->_entityManager->persist($data);
         $this->_entityManager->flush();

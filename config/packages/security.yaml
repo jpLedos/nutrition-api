@@ -18,6 +18,12 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
 
+        api_token_refresh:
+          pattern: ^/api/token/refresh
+          stateless: true
+          refresh_jwt: ~
+
+
         login:
             pattern: ^/api/login
             stateless: true
@@ -57,11 +63,14 @@ security:
     # Note: Only the *first* access control that matches will be used
     access_control:
 
+        - { path: ^/api/token/refresh, roles: PUBLIC_ACCESS }
         - { path: ^/api/docs, roles: PUBLIC_ACCESS } # Allows accessing API documentations and Swagger UI
-        - { path: ^/api/allergens, roles: PUBLIC_ACCESS } 
-        - { path: ^/api/categories, roles: PUBLIC_ACCESS } 
-        - { path: ^/api/recipes, roles: PUBLIC_ACCESS } 
+        - { path: ^/api/allergens, roles: PUBLIC_ACCESS, method: GET } 
+        - { path: ^/api/categories, roles: PUBLIC_ACCESS, method: GET } 
+        - { path: ^/api/recipes, roles: PUBLIC_ACCESS, method: GET } 
+        - { path: ^/api/recipes, roles: ROLE_ADMIN, method: POST PATCH } 
         - { path: ^/api/emails, roles: PUBLIC_ACCESS, method: POST} 
+        - { path: ^/api/users, roles: IS_AUTHENTICATED_FULLY } 
         - { path: ^/api/login_check, roles: PUBLIC_ACCESS }
         - { path: ^/api,       roles: IS_AUTHENTICATED_FULLY }
 

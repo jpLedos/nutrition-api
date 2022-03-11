@@ -68,7 +68,7 @@ class UserDataPersister implements ContextAwareDataPersisterInterface
         }
 
 
-                //allergens management
+            //allergens management
             $allergenRepository = $this->_entityManager->getRepository(Allergen::class);
 
             foreach ($data->getAllergens() as $allergen) {
@@ -82,7 +82,6 @@ class UserDataPersister implements ContextAwareDataPersisterInterface
                     $this->_entityManager->persist($allergen);
                 }
             }
-
 
         $this->_entityManager->persist($data);
         $this->_entityManager->flush();

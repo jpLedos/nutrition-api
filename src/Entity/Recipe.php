@@ -3,13 +3,13 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
-use ApiPlatform\Core\Annotation\ApiFilter;
 use App\Repository\RecipeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 #[ORM\Entity(repositoryClass: RecipeRepository::class)]
 #[ApiResource(
@@ -35,6 +35,7 @@ class Recipe
     #[ORM\Column(type: 'integer')]
     private $id;
 
+    #[Assert\Length(min : 3 , minMessage : "le titre doit avoir {{ limit }} caractères")]
     #[Groups(["recipe:read", "recipe:write",'recipe:update'])]
     #[ORM\Column(type: 'string', length: 100)]
     private $title;
@@ -44,15 +45,15 @@ class Recipe
     private $description;
 
     #[Groups(["recipe:read", "recipe:write",'recipe:update'])]
-    #[ORM\Column(type: 'integer')]
+    #[ORM\Column(type: 'string')]
     private $preparationTime;
 
     #[Groups(["recipe:read", "recipe:write",'recipe:update'])]
-    #[ORM\Column(type: 'integer')]
+    #[ORM\Column(type: 'string')]
     private $timeout;
 
     #[Groups(["recipe:read", "recipe:write",'recipe:update'])]
-    #[ORM\Column(type: 'integer')]
+    #[ORM\Column(type: 'string')]
     private $cookingTime;
 
     #[Groups(["recipe:read", "recipe:write",'recipe:update'])]
@@ -114,36 +115,36 @@ class Recipe
         return $this;
     }
 
-    public function getPreparationTime(): ?int
+    public function getPreparationTime(): ?string
     {
         return $this->preparationTime;
     }
 
-    public function setPreparationTime(int $preparationTime): self
+    public function setPreparationTime(string $preparationTime): self
     {
         $this->preparationTime = $preparationTime;
 
         return $this;
     }
 
-    public function getTimeout(): ?int
+    public function getTimeout(): ?string
     {
         return $this->timeout;
     }
 
-    public function setTimeout(int $timeout): self
+    public function setTimeout(string $timeout): self
     {
         $this->timeout = $timeout;
 
         return $this;
     }
 
-    public function getCookingTime(): ?int
+    public function getCookingTime(): ?string
     {
         return $this->cookingTime;
     }
 
-    public function setCookingTime(int $cookingTime): self
+    public function setCookingTime(string $cookingTime): self
     {
         $this->cookingTime = $cookingTime;
 
