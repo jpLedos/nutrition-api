@@ -21,7 +21,7 @@ class Allergen
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    #[Groups(["user:read", "user:write",'user:update','recipe:read', "recipe:write",'recipe:update'])]
+    #[Groups(["user:read", "user:write",'user:update','recipe:read', 'recipe:write','recipe:update'])]
     #[ORM\Column(type: 'string', length: 100, unique: true)]
     #[Assert\NotBlank()]
     private $title;

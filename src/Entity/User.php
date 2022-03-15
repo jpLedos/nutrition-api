@@ -48,7 +48,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string')]
     private $password;
 
-    #[Groups(["user:read", "user:write",'user:update'])]
+    #[Groups(["user:read", "user:write",'user:update','recipe:read'])]
     #[ORM\Column(type: 'string', length: 100)]
     private $userName;
 
@@ -64,10 +64,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(["user:read", "user:write",'user:update'])]
     private $allergens;
 
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Comment::class, orphanRemoval: true)]
+    private $comments;
+
     public function __construct()
     {
         $this->categories = new ArrayCollection();
         $this->allergens = new ArrayCollection();
+        $this->comments = new ArrayCollection();
     }
 
 
@@ -209,6 +213,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeAllergen(Allergen $allergen): self
     {
         $this->allergens->removeElement($allergen);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Comment>
+     */
+    public function getComments(): Collection
+    {
+        return $this->comments;
+    }
+
+    public function addComment(Comment $comment): self
+    {
+        if (!$this->comments->contains($comment)) {
+            $this->comments[] = $comment;
+            $comment->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeComment(Comment $comment): self
+    {
+        if ($this->comments->removeElement($comment)) {
+            // set the owning side to null (unless already changed)
+            if ($comment->getUser() === $this) {
+                $comment->setUser(null);
+            }
+        }
 
         return $this;
     }

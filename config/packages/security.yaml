@@ -65,6 +65,8 @@ security:
 
         - { path: ^/api/token/refresh, roles: PUBLIC_ACCESS }
         - { path: ^/api/docs, roles: PUBLIC_ACCESS } # Allows accessing API documentations and Swagger UI
+        - { path: ^/api/comments, roles: PUBLIC_ACCESS, method: GET } 
+        - { path: ^/api/comments, roles: IS_AUTHENTICATED_FULLY, method: POST } 
         - { path: ^/api/allergens, roles: PUBLIC_ACCESS, method: GET } 
         - { path: ^/api/categories, roles: PUBLIC_ACCESS, method: GET } 
         - { path: ^/api/recipes, roles: PUBLIC_ACCESS, method: GET } 

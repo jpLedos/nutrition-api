@@ -55,20 +55,20 @@ class RecipeDataPersister implements ContextAwareDataPersisterInterface
         }
 
 
-                //allergens management
-            $allergenRepository = $this->_entityManager->getRepository(Allergen::class);
+        //allergens management
+    $allergenRepository = $this->_entityManager->getRepository(Allergen::class);
 
-            foreach ($data->getAllergens() as $allergen) {
-                $a = $allergenRepository->findOneByTitle($allergen->getTitle());
-    
-                // if the allergen exists, don't persist it
-                if ($a !== null) {
-                    $data->removeAllergen($allergen);
-                    $data->addAllergen($a);
-                } else {
-                    $this->_entityManager->persist($allergen);
-                }
-            }
+    foreach ($data->getAllergens() as $allergen) {
+        $a = $allergenRepository->findOneByTitle($allergen->getTitle());
+
+        // if the allergen exists, don't persist it
+        if ($a !== null) {
+            $data->removeAllergen($allergen);
+            $data->addAllergen($a);
+        } else {
+            $this->_entityManager->persist($allergen);
+        }
+    }
 
         $this->_entityManager->persist($data);
         $this->_entityManager->flush();
