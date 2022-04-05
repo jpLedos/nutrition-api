@@ -1,5 +1,7 @@
 api_platform:
     show_webby: false
+    title: 'NUTRITION PROJECT'
+    description: 'An Api to manage recipe and patient'
     mapping:
         paths: ['%kernel.project_dir%/src/Entity']
     patch_formats:
